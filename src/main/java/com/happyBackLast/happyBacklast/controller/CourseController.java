@@ -1,6 +1,6 @@
 package com.happyBackLast.happyBacklast.controller;
 
-
+import com.happyBackLast.happyBacklast.dto.CourseDTO;
 import com.happyBackLast.happyBacklast.model.Course;
 import com.happyBackLast.happyBacklast.service.CourseService;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +19,30 @@ public class CourseController {
     }
 
     @GetMapping
-    public List<Course> getAll() {
-        return service.getAll();
+    public List<CourseDTO> getAll(@RequestParam(required = false) Long countryId) {
+
+
+        if (countryId != null) {
+            return service.getByCountryDto(countryId);
+        }
+
+        return service.getAllDto();
     }
 
     @PostMapping
-    public Course create(@RequestBody Course c) {
-        return service.create(c);
+    public Course create(
+            @RequestBody Course c,
+            @RequestParam Long countryId
+    ) {
+        System.out.println("CREATE COURSE countryId => " + countryId);
+        return service.create(c, countryId);
     }
 
     @PutMapping("/{id}")
-    public Course update(@PathVariable Long id, @RequestBody Course c) {
+    public Course update(
+            @PathVariable Long id,
+            @RequestBody Course c
+    ) {
         return service.update(id, c);
     }
 

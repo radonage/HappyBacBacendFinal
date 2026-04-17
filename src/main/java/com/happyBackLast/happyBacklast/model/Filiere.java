@@ -19,7 +19,21 @@ public class Filiere {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "country_id")
+    @JsonIgnoreProperties("filieres")
+    private Country country;
+
     @OneToMany(mappedBy = "filiere", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("filiere")
     private List<Level> levels;
+
+    @Override
+    public String toString() {
+        return "Filiere{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", countryId=" + (country != null ? country.getId() : null) +
+                '}';
+    }
 }

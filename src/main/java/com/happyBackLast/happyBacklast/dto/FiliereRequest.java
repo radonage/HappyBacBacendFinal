@@ -7,4 +7,6 @@ import lombok.Setter;
 @Setter
 public class FiliereRequest {
     private String name;
+    private Long countryId;
+
 }

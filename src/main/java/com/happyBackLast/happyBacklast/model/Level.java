@@ -16,6 +16,9 @@ public class Level {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "country_id")
+    private Country country;
 
     private String name;
 

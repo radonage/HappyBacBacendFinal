@@ -1,4 +1,6 @@
 package com.happyBackLast.happyBacklast.controller;
+
+import com.happyBackLast.happyBacklast.dto.SubjectDTO;
 import com.happyBackLast.happyBacklast.model.Subject;
 import com.happyBackLast.happyBacklast.service.SubjectService;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +19,19 @@ public class SubjectController {
     }
 
     @GetMapping
-    public List<Subject> getAll() {
-        return service.getAll();
-    }
+    public List<SubjectDTO> getAll(@RequestParam(required = false) Long countryId) {
+            System.out.println("Zabi : " + countryId);
+        return service.getByCountryId(countryId);
+        }
+
 
     @PostMapping
-    public Subject create(@RequestBody Subject s) {
-        return service.create(s);
+    public Subject create(
+            @RequestBody Subject s,
+            @RequestParam Long countryId
+    ) {
+        System.out.println("CREATE countryId => " + countryId);
+        return service.create(s, countryId);
     }
 
     @PutMapping("/{id}")

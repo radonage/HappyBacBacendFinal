@@ -1,6 +1,8 @@
 package com.happyBackLast.happyBacklast.service;
 
 import com.happyBackLast.happyBacklast.dto.LevelDTO;
+import com.happyBackLast.happyBacklast.dto.LevelResponseDTO;
+import com.happyBackLast.happyBacklast.model.Country;
 import com.happyBackLast.happyBacklast.model.Filiere;
 import com.happyBackLast.happyBacklast.model.Level;
 import com.happyBackLast.happyBacklast.repository.FiliereRepository;
@@ -21,24 +23,48 @@ public class LevelService {
         this.filiereRepository = filiereRepository;
     }
 
-    public List<Level> getAll() {
-        return levelRepository.findAll();
-    }
+    public List<LevelResponseDTO> getAll(Long countryId) {
 
-    public Level create(LevelDTO dto) {
+        System.out.println("CountryId reçu = " + countryId);
+
+        List<Level> levels = levelRepository.findByCountryIdNative(countryId);
+
+        System.out.println("Nombre de levels trouvés = " + levels.size());
+
+        for (Level level : levels) {
+            System.out.println("Level ID = " + level.getId()
+                    + " | Name = " + level.getName()
+                    + " | Filiere = " + level.getFiliere().getName()
+                    + " | Country = " + (level.getCountry() != null ? level.getCountry().getName() : "null"));
+        }
+
+        return levels.stream()
+                .map(this::toDTO)
+                .toList();
+    }
+    // ✅ CREATE
+    public LevelResponseDTO create(LevelDTO dto, Long countryId) {
 
         Filiere filiere = filiereRepository.findById(dto.getFiliereId())
                 .orElseThrow(() -> new RuntimeException("Filière introuvable"));
 
+        if (filiere.getCountry() == null || !filiere.getCountry().getId().equals(countryId)) {
+            throw new RuntimeException("La filière ne correspond pas au pays fourni");
+        }
+
+        Country country = filiere.getCountry();
+
         Level level = new Level();
         level.setName(dto.getName());
         level.setFiliere(filiere);
+        level.setCountry(country);
 
-        return levelRepository.save(level);
+        Level saved = levelRepository.save(level);
+
+        return toDTO(saved);
     }
 
-    public Level update(Long id, LevelDTO dto) {
-
+    public LevelResponseDTO update(Long id, LevelDTO dto) {
         Level level = levelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Level introuvable"));
 
@@ -48,10 +74,23 @@ public class LevelService {
         level.setName(dto.getName());
         level.setFiliere(filiere);
 
-        return levelRepository.save(level);
+        Level updated = levelRepository.save(level);
+
+        return toDTO(updated);
     }
 
     public void delete(Long id) {
         levelRepository.deleteById(id);
+    }
+
+    public LevelResponseDTO toDTO(Level level) {
+        return new LevelResponseDTO(
+                level.getId(),
+                level.getName(),
+                level.getFiliere().getId(),
+                level.getFiliere().getName(),
+                level.getCountry() != null ? level.getCountry().getId() : null,
+                level.getCountry() != null ? level.getCountry().getName() : null
+        );
     }
 }

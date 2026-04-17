@@ -18,9 +18,18 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "country_id")
+    private Country country;
+
     private String title;
+    private String chapter;
     private String description;
+
     private String videoUrl;
+
+    @ElementCollection
+    private List<String> fileUrls;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
@@ -28,10 +37,6 @@ public class Course {
     private Subject subject;
 
     private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("course")
-    private List<Chapter> chapters;
 
     @PrePersist
     public void prePersist() {

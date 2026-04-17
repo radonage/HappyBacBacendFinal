@@ -1,5 +1,6 @@
 package com.happyBackLast.happyBacklast.controller;
 
+import com.happyBackLast.happyBacklast.dto.FiliereDTO;
 import com.happyBackLast.happyBacklast.dto.FiliereRequest;
 import com.happyBackLast.happyBacklast.model.Filiere;
 import com.happyBackLast.happyBacklast.service.FiliereService;
@@ -18,9 +19,13 @@ public class FiliereController {
         this.service = service;
     }
 
+
     @GetMapping
-    public List<Filiere> getAll() {
-        return service.getAll();
+    public List<FiliereDTO> getByCountry(@RequestParam Long countryId) {
+        return service.getByCountry(countryId)
+                .stream()
+                .map(f -> new FiliereDTO(f.getId(), f.getName(), f.getCountry().getId()))
+                .toList();
     }
 
     @PostMapping

@@ -30,34 +30,34 @@ public class DashboardController {
     }
 
     @GetMapping("/stats")
-    public DashboardStatsDTO getStats() {
+    public DashboardStatsDTO getStats(@RequestParam Long countryId) {
         return new DashboardStatsDTO(
-                courseRepo.countCourses(),
-                subjectRepo.countSubjects(),
-                levelRepo.countLevels(),
-                filiereRepo.countFilieres()
+                courseRepo.countByCountry_Id(countryId),
+                subjectRepo.countByCountry_Id(countryId),
+                levelRepo.countByCountry_Id(countryId),
+                filiereRepo.countByCountry_Id(countryId)
         );
     }
 
     @GetMapping("/courses-growth")
-    public List<MonthlyCoursesDTO> getCourseGrowth() {
-        return courseRepo.countCoursesByMonth()
+    public List<MonthlyCoursesDTO> getCourseGrowth(@RequestParam Long countryId) {
+        return courseRepo.countCoursesByMonth(countryId)
                 .stream()
                 .map(obj -> new MonthlyCoursesDTO(
                         (String) obj[0],
-                        (Long) obj[1]
+                        ((Number) obj[1]).longValue()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @GetMapping("/courses-by-subject")
-    public List<SubjectStatsDTO> getBySubject() {
-        return subjectRepo.countCoursesBySubject()
+    public List<SubjectStatsDTO> getBySubject(@RequestParam Long countryId) {
+        return subjectRepo.countCoursesBySubject(countryId)
                 .stream()
                 .map(obj -> new SubjectStatsDTO(
                         (String) obj[0],
-                        (Long) obj[1]
+                        ((Number) obj[1]).longValue()
                 ))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

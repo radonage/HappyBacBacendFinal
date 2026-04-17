@@ -1,7 +1,7 @@
 package com.happyBackLast.happyBacklast.controller;
 
 import com.happyBackLast.happyBacklast.dto.LevelDTO;
-import com.happyBackLast.happyBacklast.model.Level;
+import com.happyBackLast.happyBacklast.dto.LevelResponseDTO;
 import com.happyBackLast.happyBacklast.service.LevelService;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,19 +18,27 @@ public class LevelController {
         this.service = service;
     }
 
+    // ✅ GET → retourne DTO
     @GetMapping
-    public List<Level> getAll() {
-        return service.getAll();
+    public List<LevelResponseDTO> getAll(
+            @RequestParam(required = false) Long countryId) {
+        return service.getAll(countryId);
     }
 
     @PostMapping
-    public Level create(@RequestBody LevelDTO dto) {
-        return service.create(dto);
+    public LevelResponseDTO create(
+            @RequestBody LevelDTO dto,
+            @RequestParam Long countryId) {
+
+        return service.create(dto, countryId);
     }
 
+    // ✅ UPDATE → retourne DTO
     @PutMapping("/{id}")
-    public Level update(@PathVariable Long id,
-                        @RequestBody LevelDTO dto) {
+    public LevelResponseDTO update(
+            @PathVariable Long id,
+            @RequestBody LevelDTO dto) {
+
         return service.update(id, dto);
     }
 
