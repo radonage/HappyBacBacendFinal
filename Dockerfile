@@ -1,27 +1,48 @@
-# Étape 1 : build du projet
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+# Stage 1: Build the application
+FROM maven:3.9-eclipse-temurin-17 AS build
 
+# Set the working directory
 WORKDIR /app
 
-# Copier le pom et télécharger les dépendances (cache Docker optimisé)
+# Copy the pom.xml file first to leverage Docker cache
 COPY pom.xml .
+
+# Download dependencies - this layer will be cached unless pom.xml changes
 RUN mvn dependency:go-offline -B
 
-# Copier le code source
+# Copy the source code
 COPY src ./src
 
-# Build du jar (skip tests pour prod rapide)
+# Build the application
 RUN mvn clean package -DskipTests
 
-# Étape 2 : image légère pour exécution
-FROM eclipse-temurin:17-jdk
+# Stage 2: Create the runtime image
+FROM eclipse-temurin:17-jre-alpine
 
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Create a non-root user to run the application
+RUN addgroup -g 1000 spring && adduser -u 1000 -G spring -s /bin/sh -D spring
+
+# Set the working directory
 WORKDIR /app
 
-# Copier le jar généré
+# Copy the JAR file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-EXPOSE 8080
+# Change ownership of the application files
+RUN chown -R spring:spring /app
 
-# Lancer l'application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Switch to the non-root user
+USER spring:spring
+
+# Expose the port Spring Boot runs on
+ENV PORT=8080
+EXPOSE $PORT
+
+# Use dumb-init to run the application
+ENTRYPOINT ["dumb-init", "--"]
+
+# Run the Spring Boot application
+CMD ["java", "-Xmx512m", "-Dserver.port=${PORT}", "-jar", "app.jar"]
