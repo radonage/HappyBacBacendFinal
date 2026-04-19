@@ -1,11 +1,9 @@
 package com.happyBackLast.happyBacklast.service;
 
-import com.happyBackLast.happyBacklast.dto.ExamDTO;
+import com.happyBackLast.happyBacklast.dto.*;
 import com.happyBackLast.happyBacklast.model.Exam;
-import com.happyBackLast.happyBacklast.repository.ExamRepository;
-import com.happyBackLast.happyBacklast.repository.SubjectRepository;
-import com.happyBackLast.happyBacklast.repository.LevelRepository;
-import com.happyBackLast.happyBacklast.repository.CountryRepository;
+import com.happyBackLast.happyBacklast.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,21 +28,21 @@ public class ExamService {
         this.countryRepo = countryRepo;
     }
 
-    // ---------------- GET BY COUNTRY ----------------
-    public List<Exam> getAll(Long countryId) {
-        return repo.findByCountryId(countryId);
+    @Transactional
+    public List<ExamDTO> getAllDto(Long countryId) {
+        return repo.findByCountryId(countryId)
+                .stream()
+                .map(this::toDto)
+                .toList();
     }
 
     public Exam create(ExamDTO dto, Long countryId) {
-
-        System.out.println("📦 DTO = " + dto);
-        System.out.println("🌍 countryId = " + countryId);
 
         Exam exam = new Exam();
 
         exam.setTitle(dto.title());
         exam.setType(dto.type());
-        exam.setYear(String.valueOf(dto.year()));
+        exam.setYear(dto.year());
         exam.setDescription(dto.description());
         exam.setCorrectionVideoUrl(dto.correctionVideoUrl());
 
@@ -53,15 +51,34 @@ public class ExamService {
                         .orElseThrow(() -> new RuntimeException("Country not found"))
         );
 
+        if (dto.subject() == null || dto.subject().id() == null) {
+            throw new RuntimeException("Subject required");
+        }
+
         exam.setSubject(
                 subjectRepo.findById(dto.subject().id())
                         .orElseThrow(() -> new RuntimeException("Subject not found"))
         );
 
+        if (dto.level() == null || dto.level().getId() == null) {
+            throw new RuntimeException("Level required");
+        }
+
         exam.setLevel(
                 levelRepo.findById(dto.level().getId())
                         .orElseThrow(() -> new RuntimeException("Level not found"))
         );
+
+        if (dto.documents() != null && !dto.documents().isEmpty()) {
+            exam.setFileUrls(
+                    dto.documents()
+                            .stream()
+                            .map(DocumentDTO::getUrl)
+                            .toList()
+            );
+        } else {
+            exam.setFileUrls(List.of());
+        }
 
         return repo.save(exam);
     }
@@ -72,24 +89,37 @@ public class ExamService {
                 .orElseThrow(() -> new RuntimeException("Exam not found"));
 
         if (!exam.getCountry().getId().equals(countryId)) {
-            throw new RuntimeException("Unauthorized country access");
+            throw new RuntimeException("Unauthorized");
         }
 
         exam.setTitle(dto.title());
         exam.setType(dto.type());
-        exam.setYear(String.valueOf(dto.year()));
+        exam.setYear(dto.year());
         exam.setDescription(dto.description());
         exam.setCorrectionVideoUrl(dto.correctionVideoUrl());
 
-        exam.setSubject(
-                subjectRepo.findById(dto.subject().id())
-                        .orElseThrow(() -> new RuntimeException("Subject not found"))
-        );
+        if (dto.subject() != null && dto.subject().id() != null) {
+            exam.setSubject(
+                    subjectRepo.findById(dto.subject().id())
+                            .orElseThrow(() -> new RuntimeException("Subject not found"))
+            );
+        }
 
-        exam.setLevel(
-                levelRepo.findById(dto.level().getId())
-                        .orElseThrow(() -> new RuntimeException("Level not found"))
-        );
+        if (dto.level() != null && dto.level().getId() != null) {
+            exam.setLevel(
+                    levelRepo.findById(dto.level().getId())
+                            .orElseThrow(() -> new RuntimeException("Level not found"))
+            );
+        }
+
+        if (dto.documents() != null) {
+            exam.setFileUrls(
+                    dto.documents()
+                            .stream()
+                            .map(DocumentDTO::getUrl)
+                            .toList()
+            );
+        }
 
         return repo.save(exam);
     }
@@ -100,9 +130,45 @@ public class ExamService {
                 .orElseThrow(() -> new RuntimeException("Exam not found"));
 
         if (!exam.getCountry().getId().equals(countryId)) {
-            throw new RuntimeException("Unauthorized country access");
+            throw new RuntimeException("Unauthorized");
         }
 
         repo.delete(exam);
+    }
+
+    public ExamDTO toDto(Exam e) {
+        return new ExamDTO(
+                e.getId(),
+                e.getTitle(),
+                e.getType(),
+                e.getYear(),
+                e.getDescription(),
+                e.getCorrectionVideoUrl(),
+
+                e.getSubject() != null
+                        ? new SubjectDTO(
+                        e.getSubject().getId(),
+                        e.getSubject().getName(),
+                        null,
+                        null,
+                        null,
+                        null
+                )
+                        : null,
+
+                e.getLevel() != null
+                        ? new LevelDTO(
+                        e.getLevel().getId(),
+                        e.getLevel().getName(),
+                        null
+                )
+                        : null,
+
+                e.getFileUrls() != null
+                        ? e.getFileUrls().stream()
+                          .map(url -> new DocumentDTO(url, null, null))
+                          .toList()
+                        : List.of()
+        );
     }
 }

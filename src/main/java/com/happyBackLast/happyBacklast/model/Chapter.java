@@ -11,13 +11,9 @@ public class Chapter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
-
     private String summary;
-
     private String content;
-
     private String videoUrl;
 
     @ManyToOne

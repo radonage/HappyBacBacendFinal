@@ -14,13 +14,10 @@ public class SubjectService {
 
     private final SubjectRepository repo;
     private final CountryRepository countryRepository;
+
     public SubjectService(SubjectRepository repo, CountryRepository countryRepository) {
         this.repo = repo;
         this.countryRepository = countryRepository;
-    }
-
-    public List<Subject> getAll() {
-        return repo.findAll();
     }
 
     public List<SubjectDTO> getByCountryId(Long countryId) {
@@ -42,12 +39,9 @@ public class SubjectService {
     }
 
     public Subject create(Subject s, Long countryId) {
-
         Country country = countryRepository.findById(countryId)
                 .orElseThrow(() -> new RuntimeException("Country not found"));
-
         s.setCountry(country);
-
         return repo.save(s);
     }
 

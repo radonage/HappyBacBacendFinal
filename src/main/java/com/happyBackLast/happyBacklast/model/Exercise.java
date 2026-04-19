@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,38 +14,38 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Course {
+public class Exercise {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "country_id")
-    private Country country;
-
     private String title;
-    private String chapter;
-    private String description;
+
+    @Lob
+    private String statement;
+
+    @Lob
+    private String correction;
 
     private String videoUrl;
 
     @Transient
     private List<DocumentDTO> documents;
 
-    @ElementCollection
-    private List<String> fileUrls;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> fileUrls = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "subject_id")
-    @JsonIgnoreProperties({"courses", "level"})
-    private Subject subject;
+    @JoinColumn(name = "course_id")
+    @JsonIgnoreProperties({"exercises"})
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "country_id")
+    private Country country;
 
     private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    @JsonIgnoreProperties("course")
-    private List<Exercise> exercises;
 
     @PrePersist
     public void prePersist() {

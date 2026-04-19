@@ -24,36 +24,20 @@ public class LevelService {
     }
 
     public List<LevelResponseDTO> getAll(Long countryId) {
-
-        System.out.println("CountryId reçu = " + countryId);
-
         List<Level> levels = levelRepository.findByCountryIdNative(countryId);
-
-        System.out.println("Nombre de levels trouvés = " + levels.size());
-
-        for (Level level : levels) {
-            System.out.println("Level ID = " + level.getId()
-                    + " | Name = " + level.getName()
-                    + " | Filiere = " + level.getFiliere().getName()
-                    + " | Country = " + (level.getCountry() != null ? level.getCountry().getName() : "null"));
-        }
-
         return levels.stream()
                 .map(this::toDTO)
                 .toList();
     }
-    // ✅ CREATE
+
     public LevelResponseDTO create(LevelDTO dto, Long countryId) {
 
         Filiere filiere = filiereRepository.findById(dto.getFiliereId())
                 .orElseThrow(() -> new RuntimeException("Filière introuvable"));
-
         if (filiere.getCountry() == null || !filiere.getCountry().getId().equals(countryId)) {
             throw new RuntimeException("La filière ne correspond pas au pays fourni");
         }
-
         Country country = filiere.getCountry();
-
         Level level = new Level();
         level.setName(dto.getName());
         level.setFiliere(filiere);

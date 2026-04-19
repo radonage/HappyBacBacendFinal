@@ -1,6 +1,7 @@
 package com.happyBackLast.happyBacklast.service;
 
 import com.happyBackLast.happyBacklast.dto.CourseDTO;
+import com.happyBackLast.happyBacklast.dto.DocumentDTO;
 import com.happyBackLast.happyBacklast.model.Country;
 import com.happyBackLast.happyBacklast.model.Course;
 import com.happyBackLast.happyBacklast.repository.CountryRepository;
@@ -14,18 +15,10 @@ public class CourseService {
 
     private final CourseRepository repo;
     private final CountryRepository countryRepository;
+
     public CourseService(CourseRepository repo, CountryRepository countryRepository) {
         this.repo = repo;
         this.countryRepository = countryRepository;
-    }
-
-    // ✅ CORRECT
-    public List<Course> getByCountry(Long countryId) {
-        return repo.findByCountry_Id(countryId);
-    }
-
-    public List<Course> getAll() {
-        return repo.findAll();
     }
 
     public Course create(Course c, Long countryId) {
@@ -35,33 +28,55 @@ public class CourseService {
 
         c.setCountry(country);
 
+        if (c.getDocuments() != null && !c.getDocuments().isEmpty()) {
+
+            List<String> urls = c.getDocuments()
+                    .stream()
+                    .map(DocumentDTO::getUrl)
+                    .toList();
+
+            c.setFileUrls(urls);
+
+        } else {
+            c.setFileUrls(List.of());
+        }
+
         return repo.save(c);
     }
+
 
     public Course update(Long id, Course c) {
         c.setId(id);
         return repo.save(c);
     }
+
     public List<CourseDTO> getAllDto() {
-        return repo.findAll()
-                .stream()
+
+        System.out.println("🔥 GET ALL COURSES START");
+
+        List<Course> courses = repo.findAllWithFiles();
+
+        System.out.println("📦 TOTAL COURSES: " + courses.size());
+
+        return courses.stream()
                 .map(this::toDto)
                 .toList();
     }
 
     public List<CourseDTO> getByCountryDto(Long countryId) {
+
         return repo.findByCountryId(countryId)
                 .stream()
                 .map(this::toDto)
                 .toList();
     }
-    private CourseDTO toDto(Course c) {
+
+    public CourseDTO toDto(Course c) {
+
         return new CourseDTO(
                 c.getId(),
                 c.getTitle(),
-
                 c.getChapter(),
-
                 c.getDescription(),
                 c.getVideoUrl(),
                 c.getCreatedAt() != null ? c.getCreatedAt().toString() : null,
@@ -75,9 +90,12 @@ public class CourseService {
 
                 c.getSubject() != null && c.getSubject().getLevel() != null
                         ? c.getSubject().getLevel().getName()
-                        : null
+                        : null,
+
+                c.getFileUrls()
         );
     }
+
     public void delete(Long id) {
         repo.deleteById(id);
     }

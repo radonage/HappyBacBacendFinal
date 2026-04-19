@@ -1,14 +1,15 @@
 package com.happyBackLast.happyBacklast.dto;
 
-import com.happyBackLast.happyBacklast.dto.LevelDTO;
-import com.happyBackLast.happyBacklast.dto.SubjectDTO;
+import java.util.List;
 
 public record ExamDTO(
+        Long id,
         String title,
         String type,
         String year,
         String description,
         String correctionVideoUrl,
         SubjectDTO subject,
-        LevelDTO level
+        LevelDTO level,
+        List<DocumentDTO> documents
 ) {}

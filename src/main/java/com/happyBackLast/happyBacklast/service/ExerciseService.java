@@ -1,0 +1,107 @@
+package com.happyBackLast.happyBacklast.service;
+
+import com.happyBackLast.happyBacklast.dto.ExerciseDTO;
+import com.happyBackLast.happyBacklast.model.Course;
+import com.happyBackLast.happyBacklast.model.Exercise;
+import com.happyBackLast.happyBacklast.model.Country;
+import com.happyBackLast.happyBacklast.repository.CourseRepository;
+import com.happyBackLast.happyBacklast.repository.ExerciseRepository;
+import com.happyBackLast.happyBacklast.repository.CountryRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ExerciseService {
+
+    private final ExerciseRepository exerciseRepository;
+    private final CourseRepository courseRepository;
+    private final CountryRepository countryRepository;
+
+    public ExerciseService(
+            ExerciseRepository exerciseRepository,
+            CourseRepository courseRepository,
+            CountryRepository countryRepository
+    ) {
+        this.exerciseRepository = exerciseRepository;
+        this.courseRepository = courseRepository;
+        this.countryRepository = countryRepository;
+    }
+
+    private ExerciseDTO toDTO(Exercise e) {
+
+        List<String> files = e.getFileUrls() == null ? List.of() : e.getFileUrls();
+
+        return new ExerciseDTO(
+                e.getId(),
+                e.getTitle(),
+                e.getStatement(),
+                e.getCorrection(),
+                e.getVideoUrl(),
+                files,
+                e.getCourse() != null ? e.getCourse().getId() : null,
+                e.getCountry() != null ? e.getCountry().getId() : null
+        );
+    }
+
+    public List<ExerciseDTO> getAll(Long countryId) {
+
+        List<Exercise> list = (countryId != null)
+                ? exerciseRepository.findAllByCountry(countryId)
+                : exerciseRepository.findAll();
+
+        return list.stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    public List<ExerciseDTO> getByCourse(Long courseId, Long countryId) {
+
+        return exerciseRepository.findByCourseAndCountry(courseId, countryId)
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
+    public ExerciseDTO getById(Long id) {
+
+        Exercise e = exerciseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Exercise not found"));
+
+        return toDTO(e);
+    }
+
+    public ExerciseDTO create(Exercise e, Long courseId, Long countryId) {
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        Country country = countryRepository.findById(countryId)
+                .orElseThrow(() -> new RuntimeException("Country not found"));
+
+        e.setCourse(course);
+        e.setCountry(country);
+
+        Exercise saved = exerciseRepository.save(e);
+
+        return toDTO(saved);
+    }
+
+    public ExerciseDTO update(Long id, Exercise data) {
+
+        Exercise existing = exerciseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Exercise not found"));
+
+        existing.setTitle(data.getTitle());
+        existing.setStatement(data.getStatement());
+        existing.setCorrection(data.getCorrection());
+        existing.setVideoUrl(data.getVideoUrl());
+        existing.setFileUrls(data.getFileUrls());
+
+        return toDTO(exerciseRepository.save(existing));
+    }
+
+    public void delete(Long id) {
+        exerciseRepository.deleteById(id);
+    }
+}

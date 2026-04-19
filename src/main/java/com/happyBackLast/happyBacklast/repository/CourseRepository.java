@@ -10,11 +10,26 @@ import java.util.List;
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
     long count();
-    @Query(value = "SELECT * FROM course WHERE country_id = :countryId", nativeQuery = true)
-    List<Course> findByCountryId(@Param("countryId") Long countryId);
-    List<Course> findByCountry_Id(Long countryId);
-
     long countByCountry_Id(Long countryId);
+
+    @Query("""
+        SELECT DISTINCT c
+        FROM Course c
+        LEFT JOIN FETCH c.fileUrls
+        LEFT JOIN FETCH c.subject s
+        LEFT JOIN FETCH s.level
+        WHERE c.country.id = :countryId
+    """)
+    List<Course> findByCountryId(@Param("countryId") Long countryId);
+
+    @Query("""
+        SELECT DISTINCT c
+        FROM Course c
+        LEFT JOIN FETCH c.fileUrls
+        LEFT JOIN FETCH c.subject s
+        LEFT JOIN FETCH s.level
+    """)
+    List<Course> findAllWithFiles();
 
     @Query(value = """
         SELECT TO_CHAR(c.created_at, 'YYYY-MM'), COUNT(*)

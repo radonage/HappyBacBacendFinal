@@ -18,7 +18,6 @@ public class LevelController {
         this.service = service;
     }
 
-    // ✅ GET → retourne DTO
     @GetMapping
     public List<LevelResponseDTO> getAll(
             @RequestParam(required = false) Long countryId) {
@@ -33,12 +32,10 @@ public class LevelController {
         return service.create(dto, countryId);
     }
 
-    // ✅ UPDATE → retourne DTO
     @PutMapping("/{id}")
     public LevelResponseDTO update(
             @PathVariable Long id,
             @RequestBody LevelDTO dto) {
-
         return service.update(id, dto);
     }
 

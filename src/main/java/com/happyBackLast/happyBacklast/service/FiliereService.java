@@ -20,36 +20,27 @@ public class FiliereService {
         this.filiereRepository = filiereRepository;
         this.countryRepository = countryRepository;
     }
-
     public List<Filiere> getByCountry(Long countryId) {
-
         return filiereRepository.findFilieresByCountryId(countryId);
     }
 
 
     public Filiere create(FiliereRequest request) {
-
         Country country = countryRepository.findById(request.getCountryId())
                 .orElseThrow(() -> new RuntimeException("Country introuvable"));
-
         Filiere f = new Filiere();
         f.setName(request.getName());
         f.setCountry(country);
-
         return filiereRepository.save(f);
     }
 
     public Filiere update(Long id, FiliereRequest request) {
-
         Filiere f = filiereRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Filière introuvable"));
-
         Country country = countryRepository.findById(request.getCountryId())
                 .orElseThrow(() -> new RuntimeException("Country introuvable"));
-
         f.setName(request.getName());
         f.setCountry(country);
-
         return filiereRepository.save(f);
     }
 

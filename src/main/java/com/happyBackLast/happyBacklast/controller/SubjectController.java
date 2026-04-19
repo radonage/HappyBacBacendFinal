@@ -24,7 +24,6 @@ public class SubjectController {
         return service.getByCountryId(countryId);
         }
 
-
     @PostMapping
     public Subject create(
             @RequestBody Subject s,

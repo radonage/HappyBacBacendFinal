@@ -20,22 +20,19 @@ public class CourseController {
 
     @GetMapping
     public List<CourseDTO> getAll(@RequestParam(required = false) Long countryId) {
-
-
         if (countryId != null) {
             return service.getByCountryDto(countryId);
         }
-
         return service.getAllDto();
     }
 
     @PostMapping
-    public Course create(
+    public CourseDTO create(
             @RequestBody Course c,
             @RequestParam Long countryId
     ) {
-        System.out.println("CREATE COURSE countryId => " + countryId);
-        return service.create(c, countryId);
+        Course saved = service.create(c, countryId);
+        return service.toDto(saved);
     }
 
     @PutMapping("/{id}")

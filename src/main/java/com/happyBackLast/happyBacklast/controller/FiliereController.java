@@ -19,7 +19,6 @@ public class FiliereController {
         this.service = service;
     }
 
-
     @GetMapping
     public List<FiliereDTO> getByCountry(@RequestParam Long countryId) {
         return service.getByCountry(countryId)
