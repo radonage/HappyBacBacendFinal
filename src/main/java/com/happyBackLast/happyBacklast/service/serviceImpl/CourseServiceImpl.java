@@ -22,9 +22,6 @@ public class CourseServiceImpl implements CourseService {
         this.countryRepository = countryRepository;
     }
 
-    // =========================
-    // CREATE
-    // =========================
     public Course create(Course c, Long countryId) {
 
         Country country = countryRepository.findById(countryId)
@@ -32,7 +29,7 @@ public class CourseServiceImpl implements CourseService {
 
         c.setCountry(country);
         System.out.println("FILE URLS REÇUES = " + c.getFileUrls());
-        // ✔️ IMPORTANT : ne jamais écraser fileUrls si elles existent déjà
+
         if (c.getFileUrls() == null) {
             c.setFileUrls(List.of());
         }
@@ -40,9 +37,7 @@ public class CourseServiceImpl implements CourseService {
         return repo.save(c);
     }
 
-    // =========================
-    // UPDATE (SAFE VERSION)
-    // =========================
+
     public Course update(Long id, Course c) {
 
         Course existing = repo.findById(id)
@@ -53,20 +48,15 @@ public class CourseServiceImpl implements CourseService {
         existing.setDescription(c.getDescription());
         existing.setVideoUrl(c.getVideoUrl());
 
-        // ✔️ update fileUrls correctement
         if (c.getFileUrls() != null) {
             existing.setFileUrls(c.getFileUrls());
         }
 
-        // optionnel si tu updates subject aussi
         existing.setSubject(c.getSubject());
 
         return repo.save(existing);
     }
 
-    // =========================
-    // GET ALL DTO
-    // =========================
     public List<CourseDTO> getAllDto() {
 
         List<Course> courses = repo.findAllWithFiles();
@@ -76,9 +66,6 @@ public class CourseServiceImpl implements CourseService {
                 .toList();
     }
 
-    // =========================
-    // GET BY COUNTRY
-    // =========================
     public List<CourseDTO> getByCountryDto(Long countryId) {
 
         return repo.findByCountryId(countryId)
@@ -87,9 +74,6 @@ public class CourseServiceImpl implements CourseService {
                 .toList();
     }
 
-    // =========================
-    // DELETE
-    // =========================
     public void delete(Long id) {
         repo.deleteById(id);
     }
