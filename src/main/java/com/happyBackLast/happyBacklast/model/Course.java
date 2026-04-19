@@ -33,6 +33,11 @@ public class Course {
     private List<DocumentDTO> documents;
 
     @ElementCollection
+    @CollectionTable(
+            name = "course_file_urls",
+            joinColumns = @JoinColumn(name = "course_id")
+    )
+    @Column(name = "file_url")
     private List<String> fileUrls;
 
     @ManyToOne

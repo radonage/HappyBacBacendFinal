@@ -1,7 +1,6 @@
 package com.happyBackLast.happyBacklast.service.serviceImpl;
 
 import com.happyBackLast.happyBacklast.DTO.CourseDTO;
-import com.happyBackLast.happyBacklast.DTO.DocumentDTO;
 import com.happyBackLast.happyBacklast.DTO.mapper.CourseMapper;
 import com.happyBackLast.happyBacklast.model.Country;
 import com.happyBackLast.happyBacklast.model.Course;
@@ -23,54 +22,74 @@ public class CourseServiceImpl implements CourseService {
         this.countryRepository = countryRepository;
     }
 
+    // =========================
+    // CREATE
+    // =========================
     public Course create(Course c, Long countryId) {
 
         Country country = countryRepository.findById(countryId)
                 .orElseThrow(() -> new RuntimeException("Country not found"));
 
         c.setCountry(country);
-
-        if (c.getDocuments() != null && !c.getDocuments().isEmpty()) {
-
-            List<String> urls = c.getDocuments()
-                    .stream()
-                    .map(DocumentDTO::getUrl)
-                    .toList();
-
-            c.setFileUrls(urls);
-
-        } else {
+        System.out.println("FILE URLS REÇUES = " + c.getFileUrls());
+        // ✔️ IMPORTANT : ne jamais écraser fileUrls si elles existent déjà
+        if (c.getFileUrls() == null) {
             c.setFileUrls(List.of());
         }
 
         return repo.save(c);
     }
 
-
+    // =========================
+    // UPDATE (SAFE VERSION)
+    // =========================
     public Course update(Long id, Course c) {
-        c.setId(id);
-        return repo.save(c);
+
+        Course existing = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        existing.setTitle(c.getTitle());
+        existing.setChapter(c.getChapter());
+        existing.setDescription(c.getDescription());
+        existing.setVideoUrl(c.getVideoUrl());
+
+        // ✔️ update fileUrls correctement
+        if (c.getFileUrls() != null) {
+            existing.setFileUrls(c.getFileUrls());
+        }
+
+        // optionnel si tu updates subject aussi
+        existing.setSubject(c.getSubject());
+
+        return repo.save(existing);
     }
 
+    // =========================
+    // GET ALL DTO
+    // =========================
     public List<CourseDTO> getAllDto() {
 
         List<Course> courses = repo.findAllWithFiles();
+
         return courses.stream()
                 .map(CourseMapper::toDto)
                 .toList();
     }
 
+    // =========================
+    // GET BY COUNTRY
+    // =========================
     public List<CourseDTO> getByCountryDto(Long countryId) {
 
         return repo.findByCountryId(countryId)
                 .stream()
                 .map(CourseMapper::toDto)
                 .toList();
-
     }
 
-
-
+    // =========================
+    // DELETE
+    // =========================
     public void delete(Long id) {
         repo.deleteById(id);
     }
