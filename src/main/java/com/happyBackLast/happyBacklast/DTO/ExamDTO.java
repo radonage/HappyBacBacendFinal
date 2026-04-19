@@ -1,4 +1,4 @@
-package com.happyBackLast.happyBacklast.dto;
+package com.happyBackLast.happyBacklast.DTO;
 
 import java.util.List;
 

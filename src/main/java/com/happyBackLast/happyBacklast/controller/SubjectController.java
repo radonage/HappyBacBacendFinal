@@ -1,6 +1,6 @@
 package com.happyBackLast.happyBacklast.controller;
 
-import com.happyBackLast.happyBacklast.dto.SubjectDTO;
+import com.happyBackLast.happyBacklast.DTO.SubjectDTO;
 import com.happyBackLast.happyBacklast.model.Subject;
 import com.happyBackLast.happyBacklast.service.SubjectService;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,6 @@ public class SubjectController {
 
     @GetMapping
     public List<SubjectDTO> getAll(@RequestParam(required = false) Long countryId) {
-            System.out.println("Zabi : " + countryId);
         return service.getByCountryId(countryId);
         }
 
@@ -42,4 +41,5 @@ public class SubjectController {
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
+
 }

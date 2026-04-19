@@ -1,6 +1,6 @@
 package com.happyBackLast.happyBacklast.controller;
 
-import com.happyBackLast.happyBacklast.dto.CourseDTO;
+import com.happyBackLast.happyBacklast.DTO.CourseDTO;
 import com.happyBackLast.happyBacklast.model.Course;
 import com.happyBackLast.happyBacklast.service.CourseService;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +27,11 @@ public class CourseController {
     }
 
     @PostMapping
-    public CourseDTO create(
+    public Course create(
             @RequestBody Course c,
             @RequestParam Long countryId
     ) {
-        Course saved = service.create(c, countryId);
-        return service.toDto(saved);
+        return service.create(c, countryId);
     }
 
     @PutMapping("/{id}")

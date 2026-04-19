@@ -1,6 +1,7 @@
 package com.happyBackLast.happyBacklast.controller;
 
-import com.happyBackLast.happyBacklast.dto.ExamDTO;
+import com.happyBackLast.happyBacklast.DTO.ExamDTO;
+import com.happyBackLast.happyBacklast.DTO.mapper.ExamMapper;
 import com.happyBackLast.happyBacklast.service.ExamService;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class ExamController {
             @RequestBody ExamDTO dto,
             @RequestParam Long countryId
     ) {
-        return service.toDto(service.create(dto, countryId));
+        return ExamMapper.toDto(service.create(dto, countryId));
     }
 
     @PutMapping("/{id}")
@@ -36,7 +37,7 @@ public class ExamController {
             @RequestBody ExamDTO dto,
             @RequestParam Long countryId
     ) {
-        return service.toDto(service.update(id, dto, countryId));
+        return ExamMapper.toDto(service.update(id, dto, countryId));
     }
 
     @DeleteMapping("/{id}")

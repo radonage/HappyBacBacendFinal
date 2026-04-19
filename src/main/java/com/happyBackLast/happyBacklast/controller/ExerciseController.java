@@ -1,6 +1,6 @@
 package com.happyBackLast.happyBacklast.controller;
 
-import com.happyBackLast.happyBacklast.dto.ExerciseDTO;
+import com.happyBackLast.happyBacklast.DTO.ExerciseDTO;
 import com.happyBackLast.happyBacklast.model.Exercise;
 import com.happyBackLast.happyBacklast.service.ExerciseService;
 import org.springframework.web.bind.annotation.*;

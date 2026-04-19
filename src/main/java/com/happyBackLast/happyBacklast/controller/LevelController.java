@@ -1,7 +1,7 @@
 package com.happyBackLast.happyBacklast.controller;
 
-import com.happyBackLast.happyBacklast.dto.LevelDTO;
-import com.happyBackLast.happyBacklast.dto.LevelResponseDTO;
+import com.happyBackLast.happyBacklast.DTO.LevelDTO;
+import com.happyBackLast.happyBacklast.DTO.LevelResponseDTO;
 import com.happyBackLast.happyBacklast.service.LevelService;
 import org.springframework.web.bind.annotation.*;
 

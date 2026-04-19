@@ -1,7 +1,7 @@
 package com.happyBackLast.happyBacklast.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.happyBackLast.happyBacklast.dto.DocumentDTO;
+import com.happyBackLast.happyBacklast.DTO.DocumentDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

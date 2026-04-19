@@ -1,7 +1,7 @@
 package com.happyBackLast.happyBacklast.controller;
 
-import com.happyBackLast.happyBacklast.dto.FiliereDTO;
-import com.happyBackLast.happyBacklast.dto.FiliereRequest;
+import com.happyBackLast.happyBacklast.DTO.FiliereDTO;
+import com.happyBackLast.happyBacklast.DTO.FiliereRequest;
 import com.happyBackLast.happyBacklast.model.Filiere;
 import com.happyBackLast.happyBacklast.service.FiliereService;
 import org.springframework.web.bind.annotation.*;

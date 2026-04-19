@@ -1,11 +1,10 @@
 package com.happyBackLast.happyBacklast.controller;
 
-import com.happyBackLast.happyBacklast.dto.*;
+import com.happyBackLast.happyBacklast.DTO.*;
 import com.happyBackLast.happyBacklast.repository.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/dashboard")
@@ -30,8 +29,8 @@ public class DashboardController {
     }
 
     @GetMapping("/stats")
-    public DashboardStatsDTO getStats(@RequestParam Long countryId) {
-        return new DashboardStatsDTO(
+    public DashboardDTO getStats(@RequestParam Long countryId) {
+        return new DashboardDTO(
                 courseRepo.countByCountry_Id(countryId),
                 subjectRepo.countByCountry_Id(countryId),
                 levelRepo.countByCountry_Id(countryId),
