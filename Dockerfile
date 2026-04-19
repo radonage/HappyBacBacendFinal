@@ -13,8 +13,6 @@ COPY src ./src
 # Build du jar (skip tests pour prod rapide)
 RUN mvn clean package -DskipTests
 
----
-
 # Étape 2 : image légère pour exécution
 FROM eclipse-temurin:17-jdk
 
