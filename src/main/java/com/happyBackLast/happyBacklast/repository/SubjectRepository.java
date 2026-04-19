@@ -15,6 +15,7 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
     @Query(value = "SELECT * FROM subject WHERE country_id = :countryId", nativeQuery = true)
     List<Subject> findByCountryId(@Param("countryId") Long countryId);
+
     @Query("""
         SELECT s.name, COUNT(c)
         FROM Course c

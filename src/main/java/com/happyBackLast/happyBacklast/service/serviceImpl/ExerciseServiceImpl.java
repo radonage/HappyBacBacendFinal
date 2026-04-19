@@ -1,14 +1,11 @@
 package com.happyBackLast.happyBacklast.service.serviceImpl;
 
-import com.happyBackLast.happyBacklast.DTO.ExerciseDTO;
+import com.happyBackLast.happyBacklast.DTO.*;
 import com.happyBackLast.happyBacklast.DTO.mapper.ExerciseMapper;
-import com.happyBackLast.happyBacklast.model.Course;
 import com.happyBackLast.happyBacklast.model.Exercise;
-import com.happyBackLast.happyBacklast.model.Country;
-import com.happyBackLast.happyBacklast.repository.CourseRepository;
-import com.happyBackLast.happyBacklast.repository.ExerciseRepository;
-import com.happyBackLast.happyBacklast.repository.CountryRepository;
+import com.happyBackLast.happyBacklast.repository.*;
 import com.happyBackLast.happyBacklast.service.ExerciseService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,80 +13,96 @@ import java.util.List;
 @Service
 public class ExerciseServiceImpl implements ExerciseService {
 
-    private final ExerciseRepository exerciseRepository;
-    private final CourseRepository courseRepository;
-    private final CountryRepository countryRepository;
+    private final ExerciseRepository repo;
+    private final CourseRepository courseRepo;
+    private final CountryRepository countryRepo;
 
     public ExerciseServiceImpl(
-            ExerciseRepository exerciseRepository,
-            CourseRepository courseRepository,
-            CountryRepository countryRepository
+            ExerciseRepository repo,
+            CourseRepository courseRepo,
+            CountryRepository countryRepo
     ) {
-        this.exerciseRepository = exerciseRepository;
-        this.courseRepository = courseRepository;
-        this.countryRepository = countryRepository;
+        this.repo = repo;
+        this.courseRepo = courseRepo;
+        this.countryRepo = countryRepo;
     }
 
-
-
+    @Transactional
     public List<ExerciseDTO> getAll(Long countryId) {
-
-        List<Exercise> list = (countryId != null)
-                ? exerciseRepository.findAllByCountry(countryId)
-                : exerciseRepository.findAll();
-
-        return list.stream()
-                .map(ExerciseMapper::toDTO)
+        return repo.findByCountryId(countryId)
+                .stream()
+                .map(ExerciseMapper::toDto)
                 .toList();
     }
 
     public List<ExerciseDTO> getByCourse(Long courseId, Long countryId) {
-
-        return exerciseRepository.findByCourseAndCountry(courseId, countryId)
+        return repo.findByCourseIdAndCountryId(courseId, countryId)
                 .stream()
-                .map(ExerciseMapper::toDTO)
+                .map(ExerciseMapper::toDto)
                 .toList();
     }
 
     public ExerciseDTO getById(Long id) {
-
-        Exercise e = exerciseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Exercise not found"));
-
-        return ExerciseMapper.toDTO(e);
+        return ExerciseMapper.toDto(
+                repo.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Exercise not found"))
+        );
     }
 
-    public ExerciseDTO create(Exercise e, Long courseId, Long countryId) {
+    public ExerciseDTO create(ExerciseDTO dto, Long courseId, Long countryId) {
 
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+        Exercise e = new Exercise();
 
-        Country country = countryRepository.findById(countryId)
-                .orElseThrow(() -> new RuntimeException("Country not found"));
+        e.setTitle(dto.title());
+        e.setStatement(dto.statement());
+        e.setCorrection(dto.correction());
+        e.setVideoUrl(dto.videoUrl());
 
-        e.setCourse(course);
-        e.setCountry(country);
+        e.setCourse(
+                courseRepo.findById(courseId)
+                        .orElseThrow(() -> new RuntimeException("Course not found"))
+        );
 
-        Exercise saved = exerciseRepository.save(e);
+        e.setCountry(
+                countryRepo.findById(countryId)
+                        .orElseThrow(() -> new RuntimeException("Country not found"))
+        );
 
-        return ExerciseMapper.toDTO(saved);
+        if (dto.documents() != null) {
+            e.setFileUrls(
+                    dto.documents()
+                            .stream()
+                            .map(DocumentDTO::getUrl)
+                            .toList()
+            );
+        }
+
+        return ExerciseMapper.toDto(repo.save(e));
     }
 
-    public ExerciseDTO update(Long id, Exercise data) {
+    public ExerciseDTO update(Long id, ExerciseDTO dto) {
 
-        Exercise existing = exerciseRepository.findById(id)
+        Exercise e = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Exercise not found"));
 
-        existing.setTitle(data.getTitle());
-        existing.setStatement(data.getStatement());
-        existing.setCorrection(data.getCorrection());
-        existing.setVideoUrl(data.getVideoUrl());
-        existing.setFileUrls(data.getFileUrls());
+        e.setTitle(dto.title());
+        e.setStatement(dto.statement());
+        e.setCorrection(dto.correction());
+        e.setVideoUrl(dto.videoUrl());
 
-        return ExerciseMapper.toDTO(exerciseRepository.save(existing));
+        if (dto.documents() != null) {
+            e.setFileUrls(
+                    dto.documents()
+                            .stream()
+                            .map(DocumentDTO::getUrl)
+                            .toList()
+            );
+        }
+
+        return ExerciseMapper.toDto(repo.save(e));
     }
 
     public void delete(Long id) {
-        exerciseRepository.deleteById(id);
+        repo.deleteById(id);
     }
 }

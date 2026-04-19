@@ -12,6 +12,7 @@ public interface LevelRepository extends JpaRepository<Level, Long> {
     long count();
 
     long countByCountry_Id(Long countryId);
+
     @Query(value = "SELECT * FROM level l WHERE l.country_id = :countryId", nativeQuery = true)
     List<Level> findByCountryIdNative(@Param("countryId") Long countryId);
 }

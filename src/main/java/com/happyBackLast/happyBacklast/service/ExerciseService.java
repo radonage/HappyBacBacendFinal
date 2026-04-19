@@ -1,7 +1,6 @@
 package com.happyBackLast.happyBacklast.service;
 
 import com.happyBackLast.happyBacklast.DTO.ExerciseDTO;
-import com.happyBackLast.happyBacklast.model.Exercise;
 
 import java.util.List;
 
@@ -13,9 +12,9 @@ public interface ExerciseService {
 
     ExerciseDTO getById(Long id);
 
-    ExerciseDTO create(Exercise exercise, Long courseId, Long countryId);
+    ExerciseDTO create(ExerciseDTO dto, Long courseId, Long countryId);
 
-    ExerciseDTO update(Long id, Exercise exercise);
+    ExerciseDTO update(Long id, ExerciseDTO dto);
 
     void delete(Long id);
 }

@@ -8,8 +8,7 @@ public record ExerciseDTO(
         String statement,
         String correction,
         String videoUrl,
-        List<String> fileUrls,
+        List<DocumentDTO> documents,
         Long courseId,
         Long countryId
-
 ) {}

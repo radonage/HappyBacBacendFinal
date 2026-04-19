@@ -1,7 +1,6 @@
 package com.happyBackLast.happyBacklast.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.happyBackLast.happyBacklast.DTO.DocumentDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,9 +28,6 @@ public class Exercise {
     private String correction;
 
     private String videoUrl;
-
-    @Transient
-    private List<DocumentDTO> documents;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> fileUrls = new ArrayList<>();

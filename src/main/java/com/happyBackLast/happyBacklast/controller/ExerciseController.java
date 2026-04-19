@@ -1,7 +1,6 @@
 package com.happyBackLast.happyBacklast.controller;
 
 import com.happyBackLast.happyBacklast.DTO.ExerciseDTO;
-import com.happyBackLast.happyBacklast.model.Exercise;
 import com.happyBackLast.happyBacklast.service.ExerciseService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +18,7 @@ public class ExerciseController {
     }
 
     @GetMapping
-    public List<ExerciseDTO> getAll(@RequestParam(required = false) Long countryId) {
+    public List<ExerciseDTO> getAll(@RequestParam Long countryId) {
         return service.getAll(countryId);
     }
 
@@ -31,27 +30,21 @@ public class ExerciseController {
         return service.getByCourse(courseId, countryId);
     }
 
-    @GetMapping("/{id}")
-    public ExerciseDTO getById(@PathVariable Long id) {
-        return service.getById(id);
-    }
-
     @PostMapping
     public ExerciseDTO create(
-            @RequestBody Exercise e,
+            @RequestBody ExerciseDTO dto,
             @RequestParam Long courseId,
             @RequestParam Long countryId
     ) {
-        System.out.println("CREATE EXERCISE courseId => " + courseId);
-        return service.create(e, courseId, countryId);
+        return service.create(dto, courseId, countryId);
     }
 
     @PutMapping("/{id}")
     public ExerciseDTO update(
             @PathVariable Long id,
-            @RequestBody Exercise e
+            @RequestBody ExerciseDTO dto
     ) {
-        return service.update(id, e);
+        return service.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
