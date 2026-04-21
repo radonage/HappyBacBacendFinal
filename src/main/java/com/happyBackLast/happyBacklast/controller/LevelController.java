@@ -24,6 +24,14 @@ public class LevelController {
         return service.getAll(countryId);
     }
 
+    @GetMapping("/filter")
+    public List<LevelResponseDTO> getByCountryAndFiliere(
+            @RequestParam Long countryId,
+            @RequestParam Long filiereId
+    ) {
+        return service.getByCountryAndFiliere(countryId, filiereId);
+    }
+
     @PostMapping
     public LevelResponseDTO create(
             @RequestBody LevelDTO dto,

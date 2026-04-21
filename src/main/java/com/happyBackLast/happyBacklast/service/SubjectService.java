@@ -14,4 +14,5 @@ public interface SubjectService {
     Subject update(Long id, Subject subject);
 
     void delete(Long id);
+    List<SubjectDTO> getByCountryIdAndLevelId(Long countryId, Long levelId);
 }

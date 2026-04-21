@@ -39,4 +39,14 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
         ORDER BY TO_CHAR(c.created_at, 'YYYY-MM')
     """, nativeQuery = true)
     List<Object[]> countCoursesByMonth(@Param("countryId") Long countryId);
+
+    @Query("""
+select c from Course c
+join fetch c.country
+join fetch c.subject
+left join fetch c.fileUrls
+where c.country.id = :countryId
+and c.subject.id = :subjectId
+""")
+    List<Course> findByCountryAndSubject(Long countryId, Long subjectId);
 }

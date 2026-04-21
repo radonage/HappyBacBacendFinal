@@ -1,6 +1,7 @@
 package com.happyBackLast.happyBacklast.service.serviceImpl;
 
 import com.happyBackLast.happyBacklast.DTO.SubjectDTO;
+import com.happyBackLast.happyBacklast.DTO.mapper.SubjectMapper;
 import com.happyBackLast.happyBacklast.model.Country;
 import com.happyBackLast.happyBacklast.model.Subject;
 import com.happyBackLast.happyBacklast.repository.CountryRepository;
@@ -20,7 +21,13 @@ public class SubjectServiceImpl implements SubjectService {
         this.repo = repo;
         this.countryRepository = countryRepository;
     }
-
+    @Override
+    public List<SubjectDTO> getByCountryIdAndLevelId(Long countryId, Long levelId) {
+        return repo.findByCountryIdAndLevelId(countryId, levelId)
+                .stream()
+                .map(SubjectMapper::toDTO)
+                .toList();
+    }
     public List<SubjectDTO> getByCountryId(Long countryId) {
         return repo.findByCountryId(countryId)
                 .stream()

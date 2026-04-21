@@ -18,10 +18,24 @@ public class SubjectController {
         this.service = service;
     }
 
+    // 🔥 EXISTING: filter by country only (optional)
     @GetMapping
     public List<SubjectDTO> getAll(@RequestParam(required = false) Long countryId) {
         return service.getByCountryId(countryId);
-        }
+    }
+
+    // ✅ NEW: filter by country + level
+    @GetMapping("/filter")
+    public List<SubjectDTO> getByCountryAndLevel(
+            @RequestParam Long countryId,
+            @RequestParam Long levelId
+    ) {
+        System.out.println("📡 FILTER SUBJECTS");
+        System.out.println("countryId = " + countryId);
+        System.out.println("levelId = " + levelId);
+
+        return service.getByCountryIdAndLevelId(countryId, levelId);
+    }
 
     @PostMapping
     public Subject create(
@@ -41,5 +55,6 @@ public class SubjectController {
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
+
 
 }

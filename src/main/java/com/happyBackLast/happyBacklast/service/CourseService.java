@@ -16,4 +16,6 @@ public interface CourseService {
     List<CourseDTO> getByCountryDto(Long countryId);
 
     void delete(Long id);
+
+    List<CourseDTO> getByCountryAndSubject(Long countryId, Long subjectId);
 }

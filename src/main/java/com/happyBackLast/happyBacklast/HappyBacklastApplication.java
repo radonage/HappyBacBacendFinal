@@ -9,4 +9,5 @@ public class HappyBacklastApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HappyBacklastApplication.class, args);
 	}
+
 }

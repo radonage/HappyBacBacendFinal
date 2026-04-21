@@ -15,4 +15,6 @@ public interface LevelRepository extends JpaRepository<Level, Long> {
 
     @Query(value = "SELECT * FROM level l WHERE l.country_id = :countryId", nativeQuery = true)
     List<Level> findByCountryIdNative(@Param("countryId") Long countryId);
+
+    List<Level> findByCountryIdAndFiliereId(Long countryId, Long filiereId);
 }

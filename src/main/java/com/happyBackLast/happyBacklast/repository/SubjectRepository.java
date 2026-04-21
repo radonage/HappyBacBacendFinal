@@ -1,5 +1,6 @@
 package com.happyBackLast.happyBacklast.repository;
 
+import com.happyBackLast.happyBacklast.DTO.SubjectDTO;
 import com.happyBackLast.happyBacklast.model.Subject;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
         GROUP BY s.name
     """)
     List<Object[]> countCoursesBySubject(@Param("countryId") Long countryId);
+
+    List<Subject> findByCountryIdAndLevelId(Long countryId, Long levelId);
 }

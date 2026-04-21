@@ -37,7 +37,30 @@ public class CourseServiceImpl implements CourseService {
         return repo.save(c);
     }
 
+    @Override
+    public List<CourseDTO> getByCountryAndSubject(Long countryId, Long subjectId) {
 
+        return repo.findByCountryAndSubject(countryId, subjectId)
+                .stream()
+                .map(c -> new CourseDTO(
+                        c.getId(),
+                        c.getTitle(),
+                        c.getChapter(),
+                        c.getDescription(),
+                        c.getVideoUrl(),
+                        c.getCreatedAt() != null ? c.getCreatedAt().toString() : null,
+                        c.getSubject() != null ? c.getSubject().getId() : null,
+                        c.getSubject() != null ? c.getSubject().getName() : null,
+                        c.getSubject() != null && c.getSubject().getLevel() != null
+                                ? c.getSubject().getLevel().getId()
+                                : null,
+                        c.getSubject() != null && c.getSubject().getLevel() != null
+                                ? c.getSubject().getLevel().getName()
+                                : null,
+                        c.getFileUrls()
+                ))
+                .toList();
+    }
     public Course update(Long id, Course c) {
 
         Course existing = repo.findById(id)

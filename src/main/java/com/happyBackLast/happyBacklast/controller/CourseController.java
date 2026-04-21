@@ -26,6 +26,14 @@ public class CourseController {
         return service.getAllDto();
     }
 
+
+    @GetMapping("/by-country-subject")
+    public List<CourseDTO> getCourses(
+            @RequestParam Long countryId,
+            @RequestParam Long subjectId
+    ) {
+        return service.getByCountryAndSubject(countryId, subjectId);
+    }
     @PostMapping
     public Course create(
             @RequestBody Course c,

@@ -21,6 +21,7 @@ public class FiliereServiceImpl implements FiliereService {
         this.filiereRepository = filiereRepository;
         this.countryRepository = countryRepository;
     }
+
     public List<Filiere> getByCountry(Long countryId) {
         return filiereRepository.findFilieresByCountryId(countryId);
     }

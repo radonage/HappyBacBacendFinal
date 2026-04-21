@@ -7,7 +7,11 @@ import java.util.List;
 
 public interface LevelService {
 
+    // 📌 ancien (peut rester si tu l’utilises encore)
     List<LevelResponseDTO> getAll(Long countryId);
+
+    // 🔥 NOUVEAU : filtre avancé (country + filiere)
+    List<LevelResponseDTO> getByCountryAndFiliere(Long countryId, Long filiereId);
 
     LevelResponseDTO create(LevelDTO dto, Long countryId);
 

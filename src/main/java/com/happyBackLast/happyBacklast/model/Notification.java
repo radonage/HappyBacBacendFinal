@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
 public class Notification {
 
     @Id
@@ -20,4 +18,7 @@ public class Notification {
     private String targetLevel;
     private String targetFiliere;
     private String date;
+
+
+
 }

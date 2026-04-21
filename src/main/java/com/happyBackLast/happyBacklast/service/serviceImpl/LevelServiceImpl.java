@@ -31,7 +31,12 @@ public class LevelServiceImpl implements LevelService {
                 .map(LevelMapper::toDTO)
                 .toList();
     }
-
+    public List<LevelResponseDTO> getByCountryAndFiliere(Long countryId, Long filiereId) {
+        return levelRepository.findByCountryIdAndFiliereId(countryId, filiereId)
+                .stream()
+                .map(LevelMapper::toDTO)
+                .toList();
+    }
     public LevelResponseDTO create(LevelDTO dto, Long countryId) {
 
         Filiere filiere = filiereRepository.findById(dto.getFiliereId())
