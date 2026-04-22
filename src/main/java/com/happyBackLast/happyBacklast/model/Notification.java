@@ -19,6 +19,4 @@ public class Notification {
     private String targetFiliere;
     private String date;
 
-
-
 }

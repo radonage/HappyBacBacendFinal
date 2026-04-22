@@ -30,7 +30,6 @@ public class AuthServiceImpl implements AuthService {
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        // ⚠️ ici tu branches tes relations (country/filiere/level via repo)
         Country country = new Country();
         country.setId(request.getCountryId());
         user.setCountry(country);

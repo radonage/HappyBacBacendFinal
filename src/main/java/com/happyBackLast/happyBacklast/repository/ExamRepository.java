@@ -19,12 +19,4 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     """)
     List<Exam> findByCountryId(@Param("countryId") Long countryId);
 
-    @Query("""
-        SELECT DISTINCT e
-        FROM Exam e
-        LEFT JOIN FETCH e.subject s
-        LEFT JOIN FETCH s.level
-        LEFT JOIN FETCH e.level
-    """)
-    List<Exam> findAllWithRelations();
 }

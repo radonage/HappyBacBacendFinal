@@ -8,6 +8,6 @@ import com.happyBackLast.happyBacklast.model.User;
 public interface AuthService {
 
     User register(RegisterRequest request);
-    AuthResponse login(LoginRequest request); // ✅ corrigé
+    AuthResponse login(LoginRequest request);
 
 }
