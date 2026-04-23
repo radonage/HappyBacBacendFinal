@@ -60,8 +60,8 @@ public class AuthServiceImpl implements AuthService {
 
         AuthResponse res = new AuthResponse();
         res.setId(user.getId());
-        res.setFirstName(user.getFirstName()); // 👈 AJOUT
-        res.setLastName(user.getLastName());   // 👈 AJOUT
+        res.setFirstName(user.getFirstName());
+        res.setLastName(user.getLastName());
         res.setEmail(user.getEmail());
         res.setPhone(user.getPhone());
         res.setCountryId(user.getCountry().getId());

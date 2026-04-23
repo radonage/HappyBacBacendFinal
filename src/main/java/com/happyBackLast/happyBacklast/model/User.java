@@ -20,6 +20,7 @@ public class User {
     private String password;
     private String firstName;
     private String lastName;
+
     @ManyToOne
     @JoinColumn(name = "country_id")
     private Country country;
