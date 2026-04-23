@@ -45,4 +45,4 @@ EXPOSE $PORT
 ENTRYPOINT ["dumb-init", "--"]
 
 # Run the Spring Boot application
-CMD ["java", "-Xmx512m", "-Dserver.port=${PORT}", "-jar", "app.jar"]
+CMD ["sh", "-c", "java -Xmx512m -Dserver.port=$PORT -Dserver.address=0.0.0.0 -jar app.jar"]
